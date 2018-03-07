@@ -1,6 +1,7 @@
 package nlb.manager.app
 
 import java.io.FileReader
+import java.nio.charset.Charset
 import java.util.*
 
 object PropertySource {
@@ -12,6 +13,8 @@ object PropertySource {
     val attemptConnectionTimeout: Long
     val badCodes: IntArray
     val requestTimeout: Double
+    val healthCheckTimeout: Long
+    val encoding: Charset
 
     init {
         val properties = loadProperties()
@@ -22,6 +25,9 @@ object PropertySource {
         clusterHosts = properties.getProperty("cluster.hosts").split(",")
         badCodes = properties.getProperty("http.response.codes.bad").split(",").map { code -> code.toInt() }.toIntArray()
         requestTimeout = properties.getProperty("http.request.timeout").toLong() / 1000.0
+        healthCheckTimeout = properties.getProperty("health-check.timeout").toLong()
+        encoding = Charset.forName(Runtime.getRuntime().exec("powershell.exe chcp").inputStream.bufferedReader().readLine().split
+        (": ")[1])
     }
 
     private fun loadProperties(): Properties {

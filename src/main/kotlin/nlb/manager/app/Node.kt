@@ -1,6 +1,7 @@
 package nlb.manager.app
 
-class Node constructor(val requestUrl: String, val startCommand: String, val stopCommand: String, var state: NodeState = NodeState.CONNECT, var badConnection: Int = 0) {
+class Node constructor(
+        val requestUrl: String, val startCommand: String, val stopCommand: String, val healthCheckCommand: String, var state: NodeState = NodeState.CONNECT, var badConnection: Int = 0) {
 
     fun successConnection() {
         state = NodeState.CONNECT
