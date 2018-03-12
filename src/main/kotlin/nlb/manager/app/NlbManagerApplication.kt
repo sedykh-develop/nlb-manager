@@ -47,10 +47,15 @@ private fun loadNodes(): MutableList<Node> {
 private fun healthCheck(startTime: Long, node: Node): Long {
     if (System.currentTimeMillis() - startTime > PropertySource.healthCheckTimeout) {
         if (node.state == NodeState.CONNECT) {
-            Runtime.getRuntime().exec(node.healthCheckCommand).inputStream.bufferedReader(PropertySource.encoding).readLine().contains("отсоединено")
+            val listStr = Runtime.getRuntime().exec(node.healthCheckCommand).inputStream.bufferedReader(PropertySource.encoding).readLines()
+            for (line in listStr) {
+                if (line.contains("остановлен")) {
+                    Runtime.getRuntime().exec(node.startCommand)
+                    break
+                }
+            }
         }
         return System.currentTimeMillis()
     }
-
     return startTime
 }
